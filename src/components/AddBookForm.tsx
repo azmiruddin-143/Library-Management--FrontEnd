@@ -1,9 +1,17 @@
+
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addBook } from '../features/bookSlice';
+
+
+import { useAddBookMutation } from '../redux/api/baseApi'; 
+import { useNavigate } from 'react-router-dom'; 
+import { toast } from 'react-hot-toast'; 
 
 const AddBookForm: React.FC = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch(); // এটি বাদ দিন
+
+  // RTK Query mutation হুক ব্যবহার করুন
+  const [addBookToBackend, { isLoading }] = useAddBookMutation();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -17,34 +25,42 @@ const AddBookForm: React.FC = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'number' ? Number(value) : value, 
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newBook = {
+    const bookToAdd = {
       ...formData,
-      copies: Number(formData.copies),
-      available: true, 
+      copies: Number(formData.copies), 
+      available: formData.copies > 0,
     };
 
-    dispatch(addBook(newBook));
-    alert('Book added successfully!');
+    try {
 
-    // Reset form
-    setFormData({
-      title: '',
-      author: '',
-      genre: '',
-      isbn: '',
-      description: '',
-      copies: 1,
-    });
+      await addBookToBackend(bookToAdd).unwrap(); 
+
+      toast.success('Book added successfully to backend!'); 
+      navigate('/'); 
+
+      setFormData({
+        title: '',
+        author: '',
+        genre: '',
+        isbn: '',
+        description: '',
+        copies: 1,
+      });
+
+    } catch (err) {
+      console.error('Failed to add book to backend:', err); 
+
+    }
   };
 
   return (
@@ -53,76 +69,35 @@ const AddBookForm: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block font-medium">Title</label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+          <input type="text" name="title" value={formData.title} onChange={handleChange} className="w-full border rounded p-2" required />
         </div>
         <div>
           <label className="block font-medium">Author</label>
-          <input
-            type="text"
-            name="author"
-            value={formData.author}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+          <input type="text" name="author" value={formData.author} onChange={handleChange} className="w-full border rounded p-2" required />
         </div>
         <div>
           <label className="block font-medium">Genre</label>
-          <input
-            type="text"
-            name="genre"
-            value={formData.genre}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+          <input type="text" name="genre" value={formData.genre} onChange={handleChange} className="w-full border rounded p-2" required />
         </div>
         <div>
           <label className="block font-medium">ISBN</label>
-          <input
-            type="text"
-            name="isbn"
-            value={formData.isbn}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+          <input type="text" name="isbn" value={formData.isbn} onChange={handleChange} className="w-full border rounded p-2" required />
         </div>
         <div>
           <label className="block font-medium">Description</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            rows={4}
-          />
+          <textarea name="description" value={formData.description} onChange={handleChange} className="w-full border rounded p-2" rows={4} />
         </div>
         <div>
           <label className="block font-medium">Copies</label>
-          <input
-            type="number"
-            name="copies"
-            value={formData.copies}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            min="1"
-            required
-          />
+          <input type="number" name="copies" value={formData.copies} onChange={handleChange} className="w-full border rounded p-2" min="1" required />
         </div>
 
         <button
           type="submit"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+          disabled={isLoading} 
         >
-          Add Book
+          {isLoading ? 'Adding Book...' : 'Add Book'}
         </button>
       </form>
     </div>
