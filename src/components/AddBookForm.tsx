@@ -12,21 +12,31 @@ const AddBookForm: React.FC = () => {
     isbn: '',
     description: '',
     copies: 1,
-    available: true,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(addBook({ ...formData, copies: Number(formData.copies) }));
+
+    const newBook = {
+      ...formData,
+      copies: Number(formData.copies),
+      available: true, 
+    };
+
+    dispatch(addBook(newBook));
     alert('Book added successfully!');
+
+    // Reset form
     setFormData({
       title: '',
       author: '',
@@ -34,7 +44,6 @@ const AddBookForm: React.FC = () => {
       isbn: '',
       description: '',
       copies: 1,
-      available: true,
     });
   };
 
@@ -104,19 +113,11 @@ const AddBookForm: React.FC = () => {
             value={formData.copies}
             onChange={handleChange}
             className="w-full border rounded p-2"
+            min="1"
             required
           />
         </div>
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            name="available"
-            checked={formData.available}
-            onChange={handleChange}
-            className="mr-2"
-          />
-          <label className="font-medium">Available</label>
-        </div>
+
         <button
           type="submit"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
