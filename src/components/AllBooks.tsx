@@ -9,7 +9,7 @@ const AllBooks: React.FC = () => {
   const { data: responseData, error, isLoading, isFetching } = useGetBookQuery();
   const books = responseData?.data || [];
 
-    const [deleteBook] = useDeleteBookMutation(); // 'deleteBook' হলো আপনার ট্রিগার ফাংশন
+    const [deleteBook] = useDeleteBookMutation();
 
   const handleDeleteBook = async (bookId: string, bookTitle: string) => {
     const confirmDelete = window.confirm(`Are you sure you want to delete "${bookTitle}"?`);

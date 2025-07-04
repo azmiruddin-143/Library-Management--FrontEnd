@@ -205,7 +205,7 @@ const EditBook: React.FC = () => {
             value={formData.copies}
             onChange={handleChange}
             className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-            min="0" // কপি 0 হতে পারে, যখন unavailable হবে
+            min="0" 
             required
           />
         </div>
@@ -213,7 +213,7 @@ const EditBook: React.FC = () => {
         <button
           type="submit"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
-          disabled={isUpdating || isFetchingBook} // আপডেট বা ডেটা ফেচ করার সময় ডিসেবল থাকবে
+          disabled={isUpdating || isFetchingBook}
         >
           {isUpdating ? 'Updating Book...' : 'Update Book'}
         </button>
