@@ -2,12 +2,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
 import { toast } from 'react-hot-toast'; 
-import { useGetBookQuery } from '../redux/api/baseApi';
+import {  useDeleteBookMutation, useGetBookQuery } from '../redux/api/baseApi';
 import { FaEdit, FaEye, FaHandshake, FaTrash } from 'react-icons/fa';
 
 const AllBooks: React.FC = () => {
   const { data: responseData, error, isLoading, isFetching } = useGetBookQuery();
   const books = responseData?.data || [];
+
+    const [deleteBook] = useDeleteBookMutation(); // 'deleteBook' হলো আপনার ট্রিগার ফাংশন
+
+  const handleDeleteBook = async (bookId: string, bookTitle: string) => {
+    const confirmDelete = window.confirm(`Are you sure you want to delete "${bookTitle}"?`);
+    if (!confirmDelete) {
+      return; 
+    }
+
+    try {
+
+      await deleteBook(bookId).unwrap();
+      toast.success(`"${bookTitle}" deleted successfully!`);
+    } catch (err) {
+      console.error('Failed to delete book:', err);
+      toast.error(`Failed to delete "${bookTitle}": ${(err as any)?.data?.message || 'Unknown error'}`);
+    }
+  };
 
 
   if (isLoading || isFetching) {
@@ -17,6 +35,8 @@ const AllBooks: React.FC = () => {
       </div>
     );
   }
+
+
 
 
   if (error) {
@@ -55,8 +75,8 @@ const AllBooks: React.FC = () => {
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
         <table className="min-w-full leading-normal">
           <thead>
-            <tr className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">Title</th>
+            <tr className="bg-gray-200  text-gray-700 uppercase text-sm leading-normal">
+              <th className="py-3  px-6 text-left">Title</th>
               <th className="py-3 px-6 text-left">Author</th>
               <th className="py-3 px-6 text-left">Genre</th>
               <th className="py-3 px-6 text-left">ISBN</th>
@@ -68,12 +88,12 @@ const AllBooks: React.FC = () => {
           <tbody className="text-gray-600 text-sm font-light">
             {books.map((book) => (
               <tr key={book._id} className="border-b border-gray-200 hover:bg-gray-100">
-                <td className="py-3 px-6 text-left whitespace-nowrap">{book.title}</td>
-                <td className="py-3 px-6 text-left">{book.author}</td>
-                <td className="py-3 px-6 text-left">{book.genre}</td>
-                <td className="py-3 px-6 text-left">{book.isbn}</td>
-                <td className="py-3 px-6 text-center">{book.copies}</td>
-                <td className="py-3 px-6 text-center">
+                <td className="py-3 text-black font-medium px-6 text-left whitespace-nowrap">{book.title}</td>
+                <td className="py-3 text-black font-medium px-6 text-left">{book.author}</td>
+                <td className="py-3 px-6 text-black font-medium text-left">{book.genre}</td>
+                <td className="py-3 px-6 text-black font-medium text-left">{book.isbn}</td>
+                <td className="py-3 px-6 text-black font-medium text-center">{book.copies}</td>
+                <td className="py-3 px-6 text-black font-medium text-center">
                   <span className={`relative inline-block px-3 py-1 font-semibold leading-tight ${book.available ? 'text-green-900' : 'text-red-900'}`}>
                     <span aria-hidden="true" className={`absolute inset-0 opacity-50 rounded-full ${book.available ? 'bg-green-200' : 'bg-red-200'}`}></span>
                     <span className="relative">{book.available ? 'Available' : 'Unavailable'}</span>
@@ -92,8 +112,13 @@ const AllBooks: React.FC = () => {
                     </Link>
 
           
-                    <button className="w-8 h-8 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-full transition duration-300" title="Delete Book">
-                      <FaTrash className="h-4 w-4" /> 
+                    
+                    <button
+                      onClick={() => handleDeleteBook(book._id, book.title)} 
+                      className="w-8 h-8 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-full transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" 
+                    >
+                        <FaTrash className="h-4 w-4" />
+                  
                     </button>
 
 
