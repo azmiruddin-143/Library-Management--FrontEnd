@@ -21,7 +21,12 @@ export const baseapi = createApi({
       query: () => `/api/books`,
       providesTags: ['Books'], 
     }),
-    
+
+    getBookById: builder.query({ 
+      query: (id) => `/api/books/${id}`, 
+      providesTags: (result, error, id) => [{ type: 'Books' as const, id }],
+    }),
+
 
     addBook: builder.mutation<Book, Partial<Book>>({ 
         query: (newBook) => ({
@@ -35,4 +40,4 @@ export const baseapi = createApi({
 })
 
 
-export const { useGetBookQuery, useAddBookMutation } = baseapi
+export const { useGetBookQuery,useGetBookByIdQuery, useAddBookMutation } = baseapi
