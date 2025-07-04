@@ -19,7 +19,7 @@ const Header = () => {
                 {/* Desktop Menu */}
                 <nav className="hidden md:flex space-x-6 text-base">
                     <Link to="/add-book" className="hover:underline">Add Book</Link>
-                    <Link to="/books" className="hover:underline">All Books</Link>
+                    <Link to="/all-books" className="hover:underline">All Books</Link>
                     <Link to="/borrow-summary" className="hover:underline">Borrow Summary</Link>
                 </nav>
 
