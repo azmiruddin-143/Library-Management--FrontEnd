@@ -80,6 +80,19 @@ export const baseapi = createApi({
       providesTags: ['Borrows'],
     }),
 
+        // *** নতুন getLatestBooks ক্যোয়ারী যোগ করুন ***
+    getLatestBooks: builder.query({ // এটি কোনো প্যারামিটার নেবে না
+      query: () => {
+        // সর্বশেষ 6টি বই, তৈরি হওয়ার তারিখ অনুযায়ী ডিসেন্ডিং অর্ডারে
+        const queryString = new URLSearchParams({
+          limit: '6',
+          sortBy: 'createdAt',
+          sort: 'desc',
+        }).toString();
+        return `/api/books?${queryString}`;
+      },
+      providesTags: ['Books'], // এটিও Books ট্যাগ সরবরাহ করবে
+    }),
 
     
   }),
@@ -88,4 +101,4 @@ export const baseapi = createApi({
 })
 
 // useGetBookQuery
-export const { useGetAllBooksQuery,useGetBookByIdQuery, useAddBookMutation, useDeleteBookMutation, useUpdateBookMutation, useBorrowBookMutation, useGetBorrowSummaryQuery } = baseapi
+export const { useGetAllBooksQuery,useGetBookByIdQuery, useAddBookMutation, useDeleteBookMutation, useUpdateBookMutation, useBorrowBookMutation, useGetBorrowSummaryQuery, useGetLatestBooksQuery } = baseapi

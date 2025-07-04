@@ -3,13 +3,12 @@ import React, { useState } from 'react';
 
 
 import { useAddBookMutation } from '../redux/api/baseApi';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const AddBookForm: React.FC = () => {
-    // const dispatch = useDispatch(); // এটি বাদ দিন
 
-    // RTK Query mutation হুক ব্যবহার করুন
     const [addBookToBackend, { isLoading }] = useAddBookMutation();
     const navigate = useNavigate();
 
@@ -45,8 +44,8 @@ const AddBookForm: React.FC = () => {
 
             await addBookToBackend(bookToAdd).unwrap();
 
-            toast.success('Book added successfully to backend!');
-            navigate('/');
+            toast.success('Book added successfully');
+            navigate('/all-books');
 
             setFormData({
                 title: '',
@@ -65,6 +64,9 @@ const AddBookForm: React.FC = () => {
 
     return (
         <div className="max-w-3xl mx-auto mt-8 p-6 bg-white shadow-md rounded-xl">
+            <Link to="/all-books" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition duration-300 mb-6">
+                <FaArrowLeft className="mr-2" /> Back to All Books
+            </Link>
             <h2 className="text-2xl font-bold mb-6 text-center">Add New Book</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

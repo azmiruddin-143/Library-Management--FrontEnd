@@ -7,6 +7,7 @@ import {
   useGetBookByIdQuery, // বইয়ের ডেটা আনার জন্য
   useUpdateBookMutation, // বই আপডেট করার জন্য
 } from '../redux/api/baseApi';
+import { FaArrowLeft } from 'react-icons/fa';
 
 // GENRE_OPTIONS টি AddBookForm থেকে কপি করে এখানে রাখুন বা একটি শেয়ার্ড ফাইল থেকে ইম্পোর্ট করুন
 const GENRE_OPTIONS = [
@@ -105,24 +106,26 @@ const EditBook: React.FC = () => {
     const updatedBookData = {
       ...formData,
       copies: Number(formData.copies),
-      available: formData.copies > 0, // যদি copies 0 হয়, তাহলে available: false হবে
+      available: formData.copies > 0, 
     };
 
     try {
-      // updateBook মিউটেশন কল করুন
-      await updateBook({ id: id || '', data: updatedBookData }).unwrap(); // id এবং ডেটা উভয়ই পাস করুন
+
+      await updateBook({ id: id || '', data: updatedBookData }).unwrap();
 
       toast.success('Book updated successfully!');
-      navigate('/all-books'); // সফলভাবে আপডেট হলে বইয়ের তালিকায় রিডাইরেক্ট করুন
+      navigate('/all-books');
 
     } catch (err) {
-      console.error('Failed to update book:', err);
       toast.error(`Failed to update book: ${(err as any)?.data?.message || 'Unknown error'}`);
     }
   };
 
   return (
     <div className="max-w-3xl mx-auto mt-8 p-6 bg-white shadow-md rounded-xl">
+      <Link to="/all-books" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition duration-300 mb-6">
+        <FaArrowLeft className="mr-2" /> Back to All Books
+      </Link>
       <h2 className="text-2xl font-bold mb-6 text-center">Edit Book</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
@@ -205,7 +208,7 @@ const EditBook: React.FC = () => {
             value={formData.copies}
             onChange={handleChange}
             className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-            min="0" 
+            min="0"
             required
           />
         </div>

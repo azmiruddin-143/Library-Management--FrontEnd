@@ -13,7 +13,7 @@ const Header = () => {
         <header className="bg-blue-600 text-white shadow-md">
             <div className="container  mx-auto px-4 py-3 flex justify-between items-center">
     
-                <h1 className="text-lg md:text-xl font-bold">Library Management</h1>
+                <Link to="/"><h1 className="text-lg md:text-xl font-bold">Library Management</h1></Link>
 
                 <nav className="hidden md:flex space-x-6 text-base">
                     <Link to="/add-book" className="hover:underline">Add Book</Link>
@@ -35,7 +35,7 @@ const Header = () => {
                     }`}
             >
                 <nav className="flex flex-col px-4 py-2 space-y-2">
-                    <Link to="/books" onClick={toggleMenu} className="hover:underline">
+                    <Link to="/all-books" onClick={toggleMenu} className="hover:underline">
                         All Books
                     </Link>
                     <Link to="/add-book" onClick={toggleMenu} className="hover:underline">

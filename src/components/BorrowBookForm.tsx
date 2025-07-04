@@ -5,12 +5,13 @@ import { toast } from 'react-hot-toast';
 import { FaArrowLeft } from 'react-icons/fa';
 
 import {
-  useGetBookByIdQuery, 
-  useBorrowBookMutation, 
+  useGetBookByIdQuery,
+  useBorrowBookMutation,
 } from '../redux/api/baseApi';
+import LoadingSpinner from './LoadingSpinner';
 
 const BorrowBookForm: React.FC = () => {
-  const { bookId } = useParams<{ bookId: string }>(); 
+  const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
   const { data: bookResponse, error: fetchError, isLoading: isFetchingBook } = useGetBookByIdQuery(bookId || '');
   const book = bookResponse?.book;
@@ -21,16 +22,16 @@ const BorrowBookForm: React.FC = () => {
 
   const [formData, setFormData] = useState({
     quantity: 1,
-    dueDate: '', 
+    dueDate: '',
   });
 
 
   useEffect(() => {
     const today = new Date();
-    const dueDate = new Date(today.setDate(today.getDate() + 7)); 
+    const dueDate = new Date(today.setDate(today.getDate() + 7));
     setFormData((prev) => ({
       ...prev,
-      dueDate: dueDate.toISOString().split('T')[0], 
+      dueDate: dueDate.toISOString().split('T')[0],
     }));
   }, []);
 
@@ -65,13 +66,13 @@ const BorrowBookForm: React.FC = () => {
     try {
 
       await borrowBook({
-        book: book._id, 
+        book: book._id,
         quantity: formData.quantity,
         dueDate: formData.dueDate,
       }).unwrap();
 
       toast.success(`Successfully borrowed ${formData.quantity} copies of "${book.title}"!`);
-      navigate('/borrow-summary'); 
+      navigate('/borrow-summary');
 
     } catch (err) {
       console.error('Failed to borrow book:', err);
@@ -82,7 +83,7 @@ const BorrowBookForm: React.FC = () => {
   if (isFetchingBook) {
     return (
       <div className="flex justify-center items-center h-screen text-xl text-gray-700">
-        <p>Loading book details for borrowing...</p>
+        <LoadingSpinner></LoadingSpinner>
       </div>
     );
   }
@@ -100,7 +101,7 @@ const BorrowBookForm: React.FC = () => {
 
   if (!book) {
     return (
-      <div className="container mx-auto p-4 mt-8 text-center">
+      <div className="container mx-auto p-4 mt-8 text-center h-screen">
         <h2 className="text-3xl font-bold mb-6 text-gray-800">Book Not Found</h2>
         <p className="text-gray-600 mt-4">The book you are trying to borrow does not exist.</p>
         <Link to="/books" className="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
@@ -111,51 +112,53 @@ const BorrowBookForm: React.FC = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto mt-8 p-6 bg-white shadow-md rounded-xl">
-      <Link to="/all-books" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition duration-300 mb-6">
-        <FaArrowLeft className="mr-2" /> Back to All Books
-      </Link>
-      <h2 className="text-2xl font-bold mb-6 text-center">Borrow Book: "{book.title}"</h2>
-      <p className="text-center text-gray-600 mb-4">Available Copies: <span className="font-semibold text-blue-600">{book.copies}</span></p>
+    <div className='h-screen'>
+      <div className="max-w-3xl mx-auto mt-8 p-6 bg-white shadow-md rounded-xl">
+        <Link to="/all-books" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition duration-300 mb-6">
+          <FaArrowLeft className="mr-2" /> Back to All Books
+        </Link>
+        <h2 className="text-2xl font-bold mb-6 text-center">Borrow Book: "{book.title}"</h2>
+        <p className="text-center text-gray-600 mb-4">Available Copies: <span className="font-semibold text-blue-600">{book.copies}</span></p>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-        <div>
-          <label htmlFor="quantity" className="block text-gray-700 text-sm font-medium mb-2">Quantity to Borrow</label>
-          <input
-            type="number"
-            id="quantity"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-            min="1"
-            max={book.copies} 
-            required
-          />
-        </div>
+          <div>
+            <label htmlFor="quantity" className="block text-gray-700 text-sm font-medium mb-2">Quantity to Borrow</label>
+            <input
+              type="number"
+              id="quantity"
+              name="quantity"
+              value={formData.quantity}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+              min="1"
+              max={book.copies}
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="dueDate" className="block text-gray-700 text-sm font-medium mb-2">Due Date</label>
-          <input
-            type="date"
-            id="dueDate"
-            name="dueDate"
-            value={formData.dueDate}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
-        </div>
+          <div>
+            <label htmlFor="dueDate" className="block text-gray-700 text-sm font-medium mb-2">Due Date</label>
+            <input
+              type="date"
+              id="dueDate"
+              name="dueDate"
+              value={formData.dueDate}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
 
-        <button
-          type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
-          disabled={isBorrowing || isFetchingBook || book.copies === 0} 
-        >
-          {isBorrowing ? 'Borrowing...' : (book.copies === 0 ? 'No Copies Available' : 'Borrow Book')}
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
+            disabled={isBorrowing || isFetchingBook || book.copies === 0}
+          >
+            {isBorrowing ? 'Borrowing...' : (book.copies === 0 ? 'No Copies Available' : 'Borrow Book')}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

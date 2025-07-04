@@ -1,16 +1,18 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import Header from "../components/Header";
-// import { ToastBar } from "react-hot-toast";
-
+import { Toaster } from 'react-hot-toast';
+import Footer from "../components/Footer";
 const Root = () => {
     return (
         <div>
-            {/* <ToastBar
-                position="top-center"
+            <Toaster
+                position="top-right"
                 reverseOrder={false}
-            /> */}
+            />
             <Header></Header>
             <Outlet></Outlet>
+            <Footer></Footer>
+             <ScrollRestoration />
         </div>
     );
 };

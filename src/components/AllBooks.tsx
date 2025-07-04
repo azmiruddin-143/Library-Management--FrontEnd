@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useGetAllBooksQuery, useDeleteBookMutation } from '../redux/api/baseApi';
 
 import { FaEdit, FaEye, FaHandshake, FaTrash, FaFilter, FaSort } from 'react-icons/fa';
+import LoadingSpinner from './LoadingSpinner';
 
 
 
@@ -52,7 +53,7 @@ const AllBooks: React.FC = () => {
   if (isLoading || isFetching) {
     return (
       <div className="flex justify-center items-center h-screen text-xl text-gray-700">
-        <p>Loading books...</p>
+        <LoadingSpinner></LoadingSpinner>
       </div>
     );
   }
@@ -70,9 +71,9 @@ const AllBooks: React.FC = () => {
 
   if (!books || books.length === 0) {
     return (
-      <div className="container mx-auto p-4 mt-8 text-center">
+      <div className="container mx-auto p-4 mt-8 text-center h-screen">
         <h2 className="text-3xl font-bold mb-6 text-gray-800">All Books</h2>
-        <Link to="/create-book" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 mb-6 inline-block">
+        <Link to="/add-book" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 mb-6 inline-block">
           Add New Book
         </Link>
         <p className="text-gray-600 mt-4">No books found. Please add some books!</p>
@@ -81,10 +82,10 @@ const AllBooks: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 mt-8">
-      <div className="flex justify-between items-center mb-6">
+    <div className="container mx-auto p-4 mt-8 lg:h-screen">
+      <div className="flex justify-between items-center mb-6 ">
         <h2 className="text-3xl font-bold text-gray-800">All Books</h2>
-        <Link to="/create-book" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+        <Link to="/add-book" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300">
           Add New Book
         </Link>
       </div>
