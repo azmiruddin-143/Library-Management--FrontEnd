@@ -17,9 +17,18 @@ export const baseapi = createApi({
   tagTypes: ['Books'], 
 
   endpoints: (builder) => ({
-    getBook: builder.query<Book[], void>({ 
-      query: () => `/api/books`,
-      providesTags: ['Books'], 
+    // getBook: builder.query<Book[], void>({ 
+    //   query: () => `/api/books`,
+    //   providesTags: ['Books'], 
+    // }),
+     // getAllBooks ক্যোয়ারী টাইপিং আপডেট করুন
+    getAllBooks: builder.query({ // <--- এখানে পরিবর্তন
+      query: (params) => {
+        // ক্যোয়ারী প্যারামিটারগুলো URL এ যোগ করুন
+        const queryString = new URLSearchParams(params as Record<string, string>).toString();
+        return `/api/books?${queryString}`;
+      },
+      providesTags: ['Books'],
     }),
 
       deleteBook: builder.mutation({ 
@@ -65,6 +74,12 @@ export const baseapi = createApi({
         invalidatesTags: ['Books', 'Borrows'], 
     }),
 
+     // *** getBorrowSummary ক্যোয়ারী আপডেট করুন ***
+    getBorrowSummary: builder.query({
+      query: () => `/api/borrow`, 
+      providesTags: ['Borrows'],
+    }),
+
 
     
   }),
@@ -72,5 +87,5 @@ export const baseapi = createApi({
   
 })
 
-
-export const { useGetBookQuery,useGetBookByIdQuery, useAddBookMutation, useDeleteBookMutation, useUpdateBookMutation, useBorrowBookMutation } = baseapi
+// useGetBookQuery
+export const { useGetAllBooksQuery,useGetBookByIdQuery, useAddBookMutation, useDeleteBookMutation, useUpdateBookMutation, useBorrowBookMutation, useGetBorrowSummaryQuery } = baseapi

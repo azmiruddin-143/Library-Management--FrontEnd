@@ -11,12 +11,10 @@ const Header = () => {
 
     return (
         <header className="bg-blue-600 text-white shadow-md">
-            {/* Top Bar */}
-            <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-                {/* Project Name (always visible) */}
+            <div className="container  mx-auto px-4 py-3 flex justify-between items-center">
+    
                 <h1 className="text-lg md:text-xl font-bold">Library Management</h1>
 
-                {/* Desktop Menu */}
                 <nav className="hidden md:flex space-x-6 text-base">
                     <Link to="/add-book" className="hover:underline">Add Book</Link>
                     <Link to="/all-books" className="hover:underline">All Books</Link>
