@@ -44,8 +44,23 @@ export const baseapi = createApi({
         }),
         invalidatesTags: ['Books'], 
     }),
+
+
+   updateBook: builder.mutation({ // <--- updateBook মিউটেশন
+        query: ({ id, data }) => ({
+            url: `/api/books/${id}`, // আপনার API এর PUT এন্ডপয়েন্ট
+            method: 'PUT',
+            body: data, // আপডেট করার জন্য ডেটা
+        }),
+        invalidatesTags: (result, error, { id }) => [{ type: 'Books', id }, 'Books'],
+    }),
+
+
+    
   }),
+
+  
 })
 
 
-export const { useGetBookQuery,useGetBookByIdQuery, useAddBookMutation, useDeleteBookMutation} = baseapi
+export const { useGetBookQuery,useGetBookByIdQuery, useAddBookMutation, useDeleteBookMutation, useUpdateBookMutation} = baseapi
