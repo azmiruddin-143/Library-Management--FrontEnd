@@ -14,10 +14,11 @@ const BorrowBookForm: React.FC = () => {
   const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
   const { data: bookResponse, error: fetchError, isLoading: isFetchingBook } = useGetBookByIdQuery(bookId || '');
-  const book = bookResponse?.book;
+  const book = bookResponse;
+  console.log(book);
 
 
-  const [borrowBook, { isLoading: isBorrowing, error: borrowError }] = useBorrowBookMutation();
+  const [borrowBook, { isLoading: isBorrowing, }] = useBorrowBookMutation();
 
 
   const [formData, setFormData] = useState({
@@ -71,11 +72,10 @@ const BorrowBookForm: React.FC = () => {
         dueDate: formData.dueDate,
       }).unwrap();
 
-      toast.success(`Successfully borrowed ${formData.quantity} copies of "${book.title}"!`);
+      toast.success(`Successfully borrowed copies!`);
       navigate('/borrow-summary');
 
     } catch (err) {
-      console.error('Failed to borrow book:', err);
       toast.error(`Failed to borrow book: ${(err as any)?.data?.message || 'Unknown error'}`);
     }
   };

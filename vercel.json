@@ -1,0 +1,14 @@
+
+
+{
+  "rewrites": [
+    {
+      "source": "/api/:match*",
+      "destination": "https://library-management-api-mu.vercel.app/api/:match*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

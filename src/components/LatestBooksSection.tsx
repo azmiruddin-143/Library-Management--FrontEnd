@@ -3,15 +3,26 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useGetLatestBooksQuery } from '../redux/api/baseApi';
-import { FaBookOpen, FaHandshake } from 'react-icons/fa'; 
+import { FaBookOpen, FaHandshake } from 'react-icons/fa';
 import LoadingSpinner from './LoadingSpinner';
+
+// interface BookForm {
+//   _id: string;
+//   title: string;
+//   author: string;
+//   genre: string;
+//   isbn: string;
+//   description: string;
+//   copies: number;
+//   available: boolean
+// }
 
 
 
 
 const LatestBooksSection: React.FC = () => {
   const { data: responseData, error, isLoading, isFetching } = useGetLatestBooksQuery();
-  const latestBooks = responseData?.data || [];
+  const latestBooks = responseData || [];
 
 
   if (isLoading || isFetching) {
@@ -63,8 +74,8 @@ const LatestBooksSection: React.FC = () => {
                   {book.available ? 'Available' : 'Unavailable'}
                 </span>)
               </p>
-            
-              
+
+
               <div className="flex justify-between items-center mt-4">
                 {/* View Details Button (optional) */}
                 <Link to={`/books/${book._id}`} className="flex items-center justify-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-md transition duration-300">
@@ -72,13 +83,15 @@ const LatestBooksSection: React.FC = () => {
                 </Link>
 
                 {/* Borrow Button */}
-                <Link to={`/borrow/${book._id}`}
-                      className={`flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-md transition duration-300 ${
-                        book.copies === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white'
-                      }`}
-                      title={book.copies === 0 ? 'No copies available for borrowing' : 'Borrow this book'}
-                      aria-disabled={book.copies === 0}
-                      onClick={(e) => book.copies === 0 && e.preventDefault()} // কপি 0 হলে লিঙ্ক কাজ করবে না
+                <Link
+                  to={`/borrow/${book._id}`}
+                  className={`flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-md transition duration-300 ${book.copies === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white'
+                    }`}
+                  title={book.copies === 0 ? 'No copies available for borrowing' : 'Borrow this book'}
+                  aria-disabled={book.copies === 0}
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    if (book.copies === 0) e.preventDefault();
+                  }}
                 >
                   <FaHandshake className="mr-2" /> Borrow
                 </Link>

@@ -11,8 +11,15 @@ const AddBookForm: React.FC = () => {
 
     const [addBookToBackend, { isLoading }] = useAddBookMutation();
     const navigate = useNavigate();
-
-    const [formData, setFormData] = useState({
+interface BookForm {
+  title: string;
+  author: string;
+  genre: string;
+  isbn: string;
+  description: string;
+  copies: number;
+}
+    const [formData, setFormData] = useState<BookForm>({
         title: '',
         author: '',
         genre: '',
@@ -22,7 +29,7 @@ const AddBookForm: React.FC = () => {
     });
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+          e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const { name, value, type } = e.target;
         setFormData((prev) => ({

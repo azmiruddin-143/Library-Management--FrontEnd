@@ -7,6 +7,16 @@ import { useGetAllBooksQuery, useDeleteBookMutation } from '../redux/api/baseApi
 import { FaEdit, FaEye, FaHandshake, FaTrash, FaFilter, FaSort } from 'react-icons/fa';
 import LoadingSpinner from './LoadingSpinner';
 
+interface BookForm {
+  _id: string;
+  title: string;
+  author: string;
+  genre: string;
+  isbn: string;
+  description: string;
+  copies: number;
+  available: boolean;
+}
 
 
 const GENRE_OPTIONS = [
@@ -21,8 +31,8 @@ const GENRE_OPTIONS = [
 const AllBooks: React.FC = () => {
   const [genreFilter, setGenreFilter] = useState<string>(''); 
   const [sortBy, setSortBy] = useState<string>(''); 
-  const [sortOrder, setSortOrder] = useState<string>('asc'); 
-  const [limit, setLimit] = useState<number>(20); 
+const [sortOrder, setSortOrder] = useState<string>('desc');
+  const [limit, setLimit] = useState<number>(30); 
 
   const { data: responseData, error, isLoading, isFetching } = useGetAllBooksQuery({
     genre: genreFilter,
@@ -31,7 +41,8 @@ const AllBooks: React.FC = () => {
     limit: limit,
   } as any);
 
-  const books = responseData?.data || [];
+    const books:BookForm[] = responseData  as BookForm [];
+  
 
   const [deleteBook, { isLoading: isDeleting }] = useDeleteBookMutation();
 
@@ -43,7 +54,7 @@ const AllBooks: React.FC = () => {
 
     try {
       await deleteBook(bookId).unwrap();
-      toast.success(`"${bookTitle}" deleted successfully!`);
+      toast.success(`"Book deleted successfully!`);
     } catch (err) {
       console.error('Failed to delete book:', err);
       toast.error(`Failed to delete "${bookTitle}": ${(err as any)?.data?.message || 'Unknown error'}`);
@@ -140,7 +151,7 @@ const AllBooks: React.FC = () => {
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
             className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-            disabled={!sortBy} 
+            // disabled={!sortBy} 
           >
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
@@ -175,7 +186,7 @@ const AllBooks: React.FC = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
-            {books.map((book) => (
+            {books?.map((book) => (
               <tr key={book._id} className="border-b border-gray-200 hover:bg-gray-100">
                 <td className="py-3 text-black font-medium px-6 text-left whitespace-nowrap">{book.title}</td>
                 <td className="py-3 text-black font-medium px-6 text-left">{book.author}</td>

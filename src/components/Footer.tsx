@@ -1,6 +1,7 @@
 // src/components/Footer.tsx
 import React from 'react';
 import { FaGithub, FaLinkedin, FaFacebook, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa'
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   return (
@@ -9,7 +10,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 text-center md:text-left">
           {/* Section 1: About Library Hub */}
           <div className="col-span-1 md:col-span-1">
-            <h3 className="text-2xl font-extrabold text-green-400 mb-4">Library Management</h3>
+            <Link to={'/'}><h3 className="text-2xl font-extrabold text-green-400 mb-4">Library Management</h3></Link>
             <p className="text-sm leading-relaxed">
               Your modern solution for streamlined library management. Empowering readers and librarians alike with easy access and organization.
             </p>

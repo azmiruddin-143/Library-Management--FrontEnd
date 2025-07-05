@@ -5,13 +5,22 @@ import { toast } from 'react-hot-toast';
 import { useGetBorrowSummaryQuery } from '../redux/api/baseApi';
 import { FaArrowLeft, FaTable } from 'react-icons/fa';
 import LoadingSpinner from './LoadingSpinner';
-
+interface BorrowForm {
+  totalQuantity: number;
+  book: {
+    title: string;
+    isbn: string;
+  };
+}
 
 
 const BorrowSummary: React.FC = () => {
   const { data: responseData, error, isLoading, isFetching } = useGetBorrowSummaryQuery();
 
-  const summaryItems = responseData?.data || [];
+
+
+  const summaryItems: BorrowForm[] = responseData  || [];
+
 
 
   if (isLoading || isFetching) {
@@ -64,7 +73,7 @@ const BorrowSummary: React.FC = () => {
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm font-light">
-              {summaryItems.map((item) => (
+              {summaryItems?.map((item) => (
 
                 <tr key={item.book.isbn || item.book.title} className="border-b border-gray-200 hover:bg-gray-100">
                   <td className="py-3 px-6 font-normal text-black text-left whitespace-nowrap">{item.book.title}</td> 

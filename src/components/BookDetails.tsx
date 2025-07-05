@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useDeleteBookMutation, useGetBookByIdQuery } from '../redux/api/baseApi';
@@ -8,29 +8,33 @@ import LoadingSpinner from './LoadingSpinner';
 
 
 const BookDetails: React.FC = () => {
+    const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const { data: responseData, error, isLoading, isFetching } = useGetBookByIdQuery(id || '');
 
-  const book = responseData?.book || [] ;
+  const book = responseData
+  console.log(book);
 
-      const [deleteBook] = useDeleteBookMutation();
-  
-    const handleDeleteBook = async (bookId: string, bookTitle: string) => {
-      const confirmDelete = window.confirm(`Are you sure you want to delete "${bookTitle}"?`);
-      if (!confirmDelete) {
-        return; 
-      }
-  
-      try {
-  
-        await deleteBook(bookId).unwrap();
-        toast.success(`"${bookTitle}" deleted successfully!`);
-      } catch (err) {
-        console.error('Failed to delete book:', err);
-        toast.error(`Failed to delete "${bookTitle}": ${(err as any)?.data?.message || 'Unknown error'}`);
-      }
-    };
+  const [deleteBook] = useDeleteBookMutation();
+
+  const handleDeleteBook = async (bookId: string, bookTitle: string) => {
+    const confirmDelete = window.confirm(`Are you sure you want to delete "${bookTitle}"?`);
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+
+      await deleteBook(bookId).unwrap();
+      navigate('/all-books');
+      toast.success(`"book deleted successfully!`);
+      
+    } catch (err) {
+      console.error('Failed to delete book:', err);
+      toast.error(`Failed to delete "${bookTitle}": ${(err as any)?.data?.message || 'Unknown error'}`);
+    }
+  };
 
 
 
@@ -53,7 +57,7 @@ const BookDetails: React.FC = () => {
     );
   }
 
-  if (!book) { 
+  if (!book) {
     return (
       <div className="container mx-auto p-4 mt-8 text-center h-screen">
         <h2 className="text-3xl font-bold mb-6 text-gray-800">Book Not Found</h2>
@@ -100,7 +104,16 @@ const BookDetails: React.FC = () => {
           <Link to={`/borrow/${book._id}`} className="flex items-center justify-center px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md transition duration-300 shadow-md">
             Borrow Book
           </Link>
-          <button onClick={() => handleDeleteBook(book._id, book.title)}  className="flex items-center justify-center px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-md transition duration-300 shadow-md">
+          <button
+            onClick={() => {
+              if (book._id) {
+                handleDeleteBook(book._id, book.title);
+              } else {
+                alert('Book ID not found');
+              }
+            }}
+            className="flex items-center justify-center px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-md transition duration-300 shadow-md"
+          >
             Delete Book
           </button>
         </div>

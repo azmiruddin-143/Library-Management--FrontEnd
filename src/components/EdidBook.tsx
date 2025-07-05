@@ -1,37 +1,35 @@
-// src/components/EditBook.tsx
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 
 import {
-  useGetBookByIdQuery, // বইয়ের ডেটা আনার জন্য
-  useUpdateBookMutation, // বই আপডেট করার জন্য
+  useGetBookByIdQuery, 
+  useUpdateBookMutation, 
 } from '../redux/api/baseApi';
 import { FaArrowLeft } from 'react-icons/fa';
 
-// GENRE_OPTIONS টি AddBookForm থেকে কপি করে এখানে রাখুন বা একটি শেয়ার্ড ফাইল থেকে ইম্পোর্ট করুন
 const GENRE_OPTIONS = [
-  'FICTION', // আপনার ব্যাকএন্ডের enum ভ্যালুগুলোর সাথে হুবহু মিলতে হবে
+  'FICTION', 
   'NON_FICTION',
   'SCIENCE',
   'HISTORY',
   'BIOGRAPHY',
   'FANTASY'
-  // অন্যান্য জেনার যোগ করুন
+
 ];
 
 
 const EditBook: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // URL থেকে বইয়ের ID নিন
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // 1. বইয়ের বর্তমান ডেটা ফেচ করুন
+
   const { data: bookResponse, error: fetchError, isLoading: isFetchingBook } = useGetBookByIdQuery(id || '');
 
-  // 2. বই আপডেট করার জন্য মিউটেশন হুক
-  const [updateBook, { isLoading: isUpdating, error: updateError, isSuccess: updateSuccess }] = useUpdateBookMutation();
+  const [updateBook, { isLoading: isUpdating,  }] = useUpdateBookMutation();
 
-  // ফর্মের স্টেট
+
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -41,10 +39,10 @@ const EditBook: React.FC = () => {
     copies: 1,
   });
 
-  // যখন বইয়ের ডেটা লোড হবে, তখন ফর্মের স্টেট আপডেট করুন
+
   useEffect(() => {
-    if (bookResponse?.book) { // নিশ্চিত করুন যে bookResponse এবং book অবজেক্ট আছে
-      const bookData = bookResponse.book;
+    if (bookResponse) { 
+      const bookData = bookResponse;
       setFormData({
         title: bookData.title,
         author: bookData.author,
@@ -54,9 +52,9 @@ const EditBook: React.FC = () => {
         copies: bookData.copies,
       });
     }
-  }, [bookResponse]); // bookResponse পরিবর্তিত হলে এই useEffect আবার রান করবে
+  }, [bookResponse]); 
 
-  // এরর বা লোডিং স্টেট
+
   if (isFetchingBook) {
     return (
       <div className="flex justify-center items-center h-screen text-xl text-gray-700">
@@ -71,18 +69,18 @@ const EditBook: React.FC = () => {
     return (
       <div className="flex justify-center items-center h-screen text-xl text-red-600">
         <p>Error: {errorMessage}</p>
-        <Link to="/books" className="ml-4 text-blue-600 hover:text-blue-800">Back to Books</Link>
+        <Link to="/all-books" className="ml-4 text-blue-600 hover:text-blue-800">Back to Books</Link>
       </div>
     );
   }
 
-  // যদি বই না পাওয়া যায়
-  if (!bookResponse?.book) {
+
+  if (!bookResponse) {
     return (
       <div className="container mx-auto p-4 mt-8 text-center">
         <h2 className="text-3xl font-bold mb-6 text-gray-800">Book Not Found</h2>
         <p className="text-gray-600 mt-4">The book you are looking to edit does not exist.</p>
-        <Link to="/books" className="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
+        <Link to="/all-books" className="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
           Back to All Books
         </Link>
       </div>
