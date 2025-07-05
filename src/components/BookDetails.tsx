@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useDeleteBookMutation, useGetBookByIdQuery } from '../redux/api/baseApi';
 import LoadingSpinner from './LoadingSpinner';
+import Swal from 'sweetalert2';
 
 
 const BookDetails: React.FC = () => {
@@ -18,23 +19,26 @@ const BookDetails: React.FC = () => {
 
   const [deleteBook] = useDeleteBookMutation();
 
-  const handleDeleteBook = async (bookId: string, bookTitle: string) => {
-    const confirmDelete = window.confirm(`Are you sure you want to delete "${bookTitle}"?`);
-    if (!confirmDelete) {
-      return;
-    }
-
-    try {
-
-      await deleteBook(bookId).unwrap();
-      navigate('/all-books');
-      toast.success(`"book deleted successfully!`);
-      
-    } catch (err) {
-      console.error('Failed to delete book:', err);
-      toast.error(`Failed to delete "${bookTitle}": ${(err as any)?.data?.message || 'Unknown error'}`);
-    }
-  };
+   const handleDeleteBook = async (bookId: string, bookTitle: string) => {
+   const result = await Swal.fire({
+     title: 'Are you sure?',
+     text: `You are about to delete Book "`,
+     icon: 'warning',
+     showCancelButton: true,
+     confirmButtonColor: '#d33',
+     cancelButtonColor: '#3085d6',
+     confirmButtonText: 'Yes, delete it!',
+   });
+ 
+   if (result.isConfirmed) {
+     try {
+       await deleteBook(bookId).unwrap();
+       Swal.fire('Deleted!', `"${bookTitle}" has been deleted.`, 'success');
+     } catch (err) {
+       Swal.fire('Failed!', `Could not delete "${bookTitle}".`, 'error');
+     }
+   }
+ };
 
 
 

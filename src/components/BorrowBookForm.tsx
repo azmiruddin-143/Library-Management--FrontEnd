@@ -152,7 +152,7 @@ const BorrowBookForm: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
             disabled={isBorrowing || isFetchingBook || book.copies === 0}
           >
             {isBorrowing ? 'Borrowing...' : (book.copies === 0 ? 'No Copies Available' : 'Borrow Book')}

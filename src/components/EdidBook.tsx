@@ -8,6 +8,7 @@ import {
   useUpdateBookMutation, 
 } from '../redux/api/baseApi';
 import { FaArrowLeft } from 'react-icons/fa';
+import LoadingSpinner from './LoadingSpinner';
 
 const GENRE_OPTIONS = [
   'FICTION', 
@@ -58,7 +59,7 @@ const EditBook: React.FC = () => {
   if (isFetchingBook) {
     return (
       <div className="flex justify-center items-center h-screen text-xl text-gray-700">
-        <p>Loading book data for editing...</p>
+        <LoadingSpinner></LoadingSpinner>
       </div>
     );
   }

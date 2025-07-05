@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useGetAllBooksQuery, useDeleteBookMutation } from '../redux/api/baseApi';
-
+import Swal from 'sweetalert2';
 import { FaEdit, FaEye, FaHandshake, FaTrash, FaFilter, FaSort } from 'react-icons/fa';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -47,19 +47,25 @@ const [sortOrder, setSortOrder] = useState<string>('desc');
   const [deleteBook, { isLoading: isDeleting }] = useDeleteBookMutation();
 
   const handleDeleteBook = async (bookId: string, bookTitle: string) => {
-    const confirmDelete = window.confirm(`Are you sure you want to delete "${bookTitle}"?`);
-    if (!confirmDelete) {
-      return;
-    }
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: `You are about to delete Book "`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+  });
 
+  if (result.isConfirmed) {
     try {
       await deleteBook(bookId).unwrap();
-      toast.success(`"Book deleted successfully!`);
+      Swal.fire('Deleted!', `"${bookTitle}" has been deleted.`, 'success');
     } catch (err) {
-      console.error('Failed to delete book:', err);
-      toast.error(`Failed to delete "${bookTitle}": ${(err as any)?.data?.message || 'Unknown error'}`);
+      Swal.fire('Failed!', `Could not delete "${bookTitle}".`, 'error');
     }
-  };
+  }
+};
 
   if (isLoading || isFetching) {
     return (
